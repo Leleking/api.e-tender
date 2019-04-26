@@ -12,16 +12,26 @@ class bidController extends Controller
         return response()->json(['data'=>$userBids]);
     }
     public function test(Request $request){
-        //move_uploaded_file($_FILES['photo']['tmp_name'], './img/' . $_FILES['photo']['name']);
-       /*  $image = $request->file('business');
-        $name = time().'.'.$image->getClientOriginalExtension();
-        $destinationPath = public_path('/img');
-       $image->move($destinationPath, $name);  */
-       $business_image = save_image($request->file('business'),"/img/business");
-       $vat_image = save_image($request->file('vat'),"/img/vat");
-       $tax_image = save_image($request->file('tax'),"/img/tax");
-
-        return response()->json(['data'=>$request->file('business')->getClientOriginalName()]);
+        $bid = new userBid;
+        $bid->project_id = $request->project_id;
+        $bid->user_id= $request->user_id;
+        $bid->experience=$request->experience;
+        $bid->price=$request->price;
+        if($request->file('business')){
+            $business_image = save_image($request->file('business'),"/img/business");
+            $bid->business = $business_image;
+        }
+        if($request->file('vat')){
+            $vat_image = save_image($request->file('vat'),"/img/vat");
+            $bid->vat = $vat_image;
+        }
+        if($request->file('tax')){
+            $tax_image = save_image($request->file('tax'),"/img/tax");
+            $bid->tax = $tax_image;
+        }
+        $bid->status=0;
+        $bid->save();
+        return response()->json(['data'=>$request->all()]);
         
     }
 }

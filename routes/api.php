@@ -23,6 +23,7 @@ Route::group(['prefix'=>'project','middleware'=>'auth:api'],function(){
     Route::get('{id}','project\projectController@getProjectDetails');
     Route::get('project_rules','project\projectController@getProjectRules');
     Route::get('category/{name}','project\projectController@getProjectsByCategory');
+    Route::post('search','project\projectController@searchProject');
     
 });
 Route::group(['prefix'=>'user','middleware'=>'auth:api'],function(){
@@ -37,6 +38,9 @@ Route::group(['prefix'=>'admin','middleware'=>['auth:api']],function(){
         Route::get('view/all','project\projectController@viewAllProjects');
         Route::get('completed','project\projectController@viewCompletedProjects');
         Route::get('calender','project\projectController@getProjectCalender');
+    });
+    Route::group(['prefix'=>'contractors'],function(){
+        Route::get('','contractorController@index');
     });
 });
 Route::post('postMedia','bid\bidController@test');

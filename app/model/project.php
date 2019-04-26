@@ -12,4 +12,7 @@ class project extends Model
     public function project_detail(){
         return $this->hasOne('App\model\project_detail');
     }
+    public function category(){
+        return $this->belongsTo("App\model\category");
+    }
 }

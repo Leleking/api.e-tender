@@ -8,12 +8,18 @@ use App\model\project;
 use App\model\project_detail;
 use App\model\category;
 use App\Http\Resources\projectResource;
+use App\Http\Resources\projectResourceAdmin;
 use App\Http\Resources\projectCalenderResource;
 class projectController extends Controller
 {
     public function getProjects(){
         $project = project::all();
         return response()->json(['data'=>$project]);
+    }
+    public function searchProject(Request $request){
+        $project = project::where('name',$request->name)->orWhere('name', 'like', '%' . $request->name . '%')->get();
+        return response()->json(['data'=>$project]);
+
     }
     public function getProjectDetails($id){
         $project = project::find($id);
@@ -42,7 +48,7 @@ class projectController extends Controller
     }
     public function viewAllProjects(){
         $project = project::all();
-        return projectResource::collection($project);
+        return projectResourceAdmin::collection($project);
     }
     public function viewCompletedProjects(){
         $project = project::where('status',1)->get();

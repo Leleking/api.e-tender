@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Resources;
-
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\project_detailResource;
 class projectResource extends JsonResource
@@ -15,6 +14,7 @@ class projectResource extends JsonResource
     public function toArray($request)
     {
         return [
+            
             "data"=>parent::toArray($request),
             "project_detail"=> new project_detailResource($this->project_detail)
         ];

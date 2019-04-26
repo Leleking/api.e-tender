@@ -29,4 +29,7 @@ class User extends Authenticatable
     public function findForPassport($identifier) {
         return User::orWhere('email', $identifier)->where('isAdmin',1)->first();
     }
+    public function userBid(){
+        return $this->hasMany("App\model\userBid");
+    }
 }
