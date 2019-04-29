@@ -1,6 +1,6 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
+    "name": "laravel/etender",
+    "description": "The api for etender application.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
