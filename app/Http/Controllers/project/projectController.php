@@ -8,22 +8,33 @@ use App\model\project;
 use App\model\project_detail;
 use App\model\category;
 use App\Http\Resources\projectResource;
+use App\Http\Resources\projectOldResource;
 use App\Http\Resources\projectResourceAdmin;
 use App\Http\Resources\projectCalenderResource;
+use App\model\userBid;
+use App\Http\Resources\tenderResource;
+use Carbon\Carbon;
 class projectController extends Controller
 {
     public function getProjects(){
         $project = project::all();
-        return response()->json(['data'=>$project]);
+        return tenderResource::collection($project);
+        //return response()->json(['data'=>$project]);
     }
     public function searchProject(Request $request){
         $project = project::where('name',$request->name)->orWhere('name', 'like', '%' . $request->name . '%')->get();
         return response()->json(['data'=>$project]);
 
     }
-    public function getProjectDetails($id){
+    public function getProjectDetails(Request $request,$id){
         $project = project::find($id);
-        return new projectResource($project);
+        $userBids = userBid::where('user_id',$request->user()->id)->where('project_id',$project->id)->get();
+        if(!count($userBids)){
+            return new projectResource($project);
+        }else{
+            return new projectOldResource($project);
+        }
+        
         
     }
     public function getProjectsByCategory($name){
@@ -53,6 +64,10 @@ class projectController extends Controller
     public function viewCompletedProjects(){
         $project = project::where('status',1)->get();
         return response()->json(['data'=>$project]);
+    }
+    public function viewProjectsDue(){
+        $projects = project::where('end_date','<',Carbon::now())->get();
+        return tenderResource::collection($projects);
     }
     public function getProjectCalender(){
         $project = project::all();

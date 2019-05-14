@@ -15,4 +15,7 @@ class project extends Model
     public function category(){
         return $this->belongsTo("App\model\category");
     }
+    public function user_bids(){
+        return $this->hasMany("App\model\userBid");
+    }
 }
