@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','isAdmin'
+        'name', 'email', 'password','isAdmin','status'
     ];
 
     /**
@@ -27,9 +27,12 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
     public function findForPassport($identifier) {
-        return User::orWhere('email', $identifier)->where('isAdmin',1)->first();
+        return User::orWhere('email', $identifier)->first();
     }
     public function userBid(){
         return $this->hasMany("App\model\userBid");
+    }
+    public function user_detail(){
+    return $this->hasOne("App\model\user_detail");
     }
 }

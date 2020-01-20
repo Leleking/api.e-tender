@@ -12,7 +12,9 @@ use App\Http\Resources\projectOldResource;
 use App\Http\Resources\projectResourceAdmin;
 use App\Http\Resources\projectCalenderResource;
 use App\model\userBid;
+use App\shortlist_specification;
 use App\Http\Resources\tenderResource;
+use App\Http\Resources\projectChartResource;
 use Carbon\Carbon;
 class projectController extends Controller
 {
@@ -55,6 +57,12 @@ class projectController extends Controller
     public function postProject(Request $request){
         $project= project::create($request->all());
         $project_detail = project_detail::create(array_merge($request->all(),['project_id'=>$project->id]));
+        $shortlist = new shortlist_specification;
+        $shortlist->project_id = $project->id;
+        $shortlist->experience = $request->experience;
+        $shortlist->avg_budget = $request->avg_budget;
+        $shortlist->shuffle = $request->shuffle;
+        $shortlist->save();
         return response()->json(['data'=>"successful"]);
     }
     public function viewAllProjects(){
@@ -72,6 +80,16 @@ class projectController extends Controller
     public function getProjectCalender(){
         $project = project::all();
         return projectCalenderResource::collection($project);
+    }
+    public function getLineChart(){
+        $projects = project::where('status',null)->get();
+        return projectChartResource::collection($projects);
+    }
+    public function getProject($id){
+        $project  = project::find($id);
+        $project_detail = $project->project_detail;
+        $specification = $project->specification;
+        return response()->json(["project"=>$project,"project_detail"=>$project_detail,"specification"=>$specification]);
     }
 
 }

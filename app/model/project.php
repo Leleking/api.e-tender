@@ -18,4 +18,7 @@ class project extends Model
     public function user_bids(){
         return $this->hasMany("App\model\userBid");
     }
+    public function specification(){
+        return $this->hasOne("App\shortlist_specification");
+    }
 }

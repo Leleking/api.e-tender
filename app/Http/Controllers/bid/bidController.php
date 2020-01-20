@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\model\userBid;
 use App\Http\Resources\userBidResource;
 use App\Http\Resources\BidResource;
+use App\Http\Controllers\sendSMSController;
+use App\model\project;
 class bidController extends Controller
 {
     public function userBids (Request $request) {
@@ -18,8 +20,16 @@ class bidController extends Controller
         return userBidResource::collection($userBids);
     }
     public function getProjectBids($id){
-        $userBids = userBid::where('project_id',$id)->get();
-        //return response()->json(["data"=>$userBids]);
+        $project = project::find($id);
+        $specifications = $project->specification;
+        if($specifications->shuffle == 1){
+            $userBids = userBid::where('project_id',$id)->orderByRaw("RAND()")->get();
+        }else{
+            //shortlist specifictions
+            $avg = userBid::where('project_id',$id)->avg('price');
+            $userBids = userBid::where('project_id',$id)->orderBy("id","asc")->get();
+        }
+       
         return BidResource::collection($userBids);  
     }
     public function test(Request $request){
@@ -48,5 +58,20 @@ class bidController extends Controller
         $bid->save();
         return response()->json(['data'=>$request->all()]);
         
+    }
+    public function grantInterview(Request $request){
+        $bid = userBid::find($request->id);
+        $bid->status = 1;
+        $bid->save();
+        $phone = $bid->user->user_detail->phone;
+        $send = new sendSMSController();
+        $send->key = "taConV0E1Fu0ibY5leaQXCon9";
+        $send->message = $request->message;
+        $send->numbers = $phone;
+        $send->sender = "Vector";
+        $isError = true;
+        $response = $send->sendMessage(); 
+        return response()->json(["data"=>$response]);
+    
     }
 }

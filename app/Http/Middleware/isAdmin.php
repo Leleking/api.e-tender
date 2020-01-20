@@ -18,9 +18,10 @@ class isAdmin
      */
     public function handle(Rquest $request, Closure $next)
     {
-        if($request::user()->isAdmin()){
+        return $next($request);
+       /*  if($request::user()->isAdmin()){
             return $next($request);
         }
-        return redirect('/');
+        return redirect('/'); */
     }
 }
