@@ -16,7 +16,7 @@ class Cors
     public function handle($request, Closure $next)
     {
         //domains to accept requests from
-        $domains = ['http://localhost:8080','192.168.43.213'];
+        $domains = ['http://etenderadmin.talanku.com'];
         //if a request is made
         if (isset($request->server()['HTTP_ORIGIN'])){
             $origin = $request->server()['HTTP_ORIGIN'];
