@@ -19,7 +19,7 @@ use Carbon\Carbon;
 class projectController extends Controller
 {
     public function getProjects(){
-        $project = project::all();
+        $project = project::where('end_date','>=',Carbon::now())->get();
         return tenderResource::collection($project);
         //return response()->json(['data'=>$project]);
     }
